@@ -107,6 +107,8 @@ func (StdoutLayer) OnRequest(ctx *layers.Context) error {
 	} else {
 		fmt.Printf("%s: %s\n", keyStyle.Render("Body"), "N/A")
 	}
+	fmt.Printf(tagStyle.Render("connect") + " " + tagStyle.Render("core"))
+	fmt.Println()
 	_, err := db.Exec("INSERT INTO "+defaultCaptureCollection+" (uuid, url, body, path, headers, date_end, status, method) VALUES (?,?,?,?,?,?,?,?)",
 		uuid.New().String(),
 		req.URI().String(),
