@@ -26,7 +26,6 @@ func initDB() (*sql.DB, error) {
 	if err != nil {
 		return db, err
 	}
-	defer db.Close()
 
 	_, err = db.Exec(collectionCreateSQL)
 	return db, err
