@@ -78,22 +78,32 @@ func main() {
 }
 
 func (StdoutLayer) OnRequest(ctx *layers.Context) error {
+	time.Sleep(1 * time.Second)
 	req := ctx.Request()
 	fmt.Println()
 	fmt.Println(urlStyle.Render(req.URI().String()))
+	fmt.Printf("%s: %d\n", keyStyle.Render("Status"), ctx.Response().StatusCode())
 	fmt.Printf("%s: %s\n", keyStyle.Render("Method"), string(req.Header.Method()))
 	fmt.Printf("%s: %s\n", keyStyle.Render("Path"), string(req.URI().Path()))
-	fmt.Printf("%s: %d\n", keyStyle.Render("Status"), ctx.Response().StatusCode())
 	fmt.Println(keyStyle.Render("Headers:"))
 	for _, line := range strings.Split(strings.TrimSuffix(string(req.Header.RawHeaders()), "\n"), "\n") {
 		if strings.TrimSpace(line) == "" {
 			continue
 		}
-		fmt.Println(headersStyle.Render(line))
+		if strings.HasPrefix(line, "Authorization:") {
+			fmt.Println(headersStyle.Render("Autorization: *****"))
+		} else {
+			fmt.Println(headersStyle.Render(line))
+		}
 	}
 	body := req.Body()
 	if len(body) > 0 {
-		fmt.Printf("%s: %s\n", keyStyle.Render("Body"), (req.Body()))
+		fmt.Printf("%s: %d bytes\n", keyStyle.Render("Body Size"), len(body))
+		if len(body) > 8192 {
+			fmt.Printf("%s: %s\n", keyStyle.Render("Body"), "[too large]")
+		} else {
+			fmt.Printf("%s: %s\n", keyStyle.Render("Body"), (req.Body()))
+		}
 	} else {
 		fmt.Printf("%s: %s\n", keyStyle.Render("Body"), "N/A")
 	}
