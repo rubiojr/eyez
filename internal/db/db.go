@@ -14,6 +14,7 @@ const (
 )
 
 var db *sql.DB
+var dbPath string
 
 type Record struct {
 	ID        int
@@ -45,6 +46,7 @@ const collectionCreateSQL = `CREATE TABLE IF NOT EXISTS "` + DefaultCaptureColle
 
 func InitDB(path string) error {
 	var err error
+	dbPath = path
 	db, err = sql.Open("sqlite3", path)
 	if err != nil {
 		return err
@@ -56,8 +58,13 @@ func InitDB(path string) error {
 
 func InitRODB(path string) error {
 	var err error
+	dbPath = path
 	db, err = sql.Open("sqlite3", "file:"+path+"?mode=ro")
 	return err
+}
+
+func Path() string {
+	return dbPath
 }
 
 func Exec(query string, args ...interface{}) (sql.Result, error) {

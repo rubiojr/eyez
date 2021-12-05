@@ -86,7 +86,7 @@ func monitorDatabase() error {
 	for {
 		c := make(chan notify.EventInfo, 1)
 
-		if err := notify.Watch(db.DefaultDatabase, c, notify.InModify); err != nil {
+		if err := notify.Watch(db.Path(), c, notify.InModify); err != nil {
 			return err
 		}
 		defer notify.Stop(c)
