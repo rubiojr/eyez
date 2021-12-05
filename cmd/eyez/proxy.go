@@ -14,6 +14,7 @@ import (
 func main() {
 	crt := flag.String("cacert", "", "CA Certificate")
 	key := flag.String("cakey", "", "CA Key")
+	port := flag.Int("port", 1080, "Proxy listening port")
 	flag.Parse()
 
 	ctx, cancel := context.WithCancel(context.Background())
@@ -29,7 +30,7 @@ func main() {
 		}
 	}()
 
-	proxy, err := eyez.New(ctx, &eyez.ProxyOptions{Port: 1080, CACert: *crt, CAKey: *key})
+	proxy, err := eyez.New(ctx, &eyez.ProxyOptions{Port: *port, CACert: *crt, CAKey: *key})
 	if err != nil {
 		fmt.Fprintf(os.Stderr, "error creating proxy: %s", err)
 		os.Exit(1)
