@@ -4,3 +4,4 @@
 /.private
 /records.db
 /sample-dbs
+*.bak

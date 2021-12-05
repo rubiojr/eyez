@@ -10,3 +10,9 @@ HTTP proxy experiment powered by [bubbletea](https://github.com/charmbracelet) a
 ## Action shots
 
 ![](docs/tui.png)
+
+_TUI_
+
+![](docs/eyez.png)
+
+_capture screen_
