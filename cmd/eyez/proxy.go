@@ -12,8 +12,8 @@ import (
 )
 
 func main() {
-	crt := flag.String("cacert", "certs/rootCA.crt", "CA Certificate")
-	key := flag.String("cakey", "certs/rootCA.key", "CA Key")
+	crt := flag.String("cacert", "", "CA Certificate")
+	key := flag.String("cakey", "", "CA Key")
 	flag.Parse()
 
 	ctx, cancel := context.WithCancel(context.Background())

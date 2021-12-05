@@ -7,10 +7,18 @@ import (
 	"strconv"
 	"time"
 
+	_ "embed"
+
 	"github.com/9seconds/httransform/v2"
 	"github.com/9seconds/httransform/v2/layers"
 	l "github.com/rubiojr/eyez/internal/layers"
 )
+
+//go:embed certs/rootCA.crt
+var caCert []byte
+
+//go:embed certs/rootCA.key
+var caKey []byte
 
 type Proxy struct {
 	p    *httransform.Server
@@ -29,19 +37,20 @@ func New(ctx context.Context, opts *ProxyOptions) (*Proxy, error) {
 	var err error
 
 	caCertPath := opts.CACert
-	if caCertPath == "" {
-		caCertPath = "certs/rootCA.crt"
-	}
-	caCert, err := ioutil.ReadFile(caCertPath)
-	if err != nil {
-		panic(err)
+	if caCertPath != "" {
+		caCert, err = ioutil.ReadFile(caCertPath)
+		if err != nil {
+			return nil, err
+		}
 	}
 
 	caKeyPath := opts.CAKey
-	if caKeyPath == "" {
-		caKeyPath = "certs/rootCA.key"
+	if caKeyPath != "" {
+		caKey, err = ioutil.ReadFile(caKeyPath)
+		if err != nil {
+			return nil, err
+		}
 	}
-	caPrivateKey, _ := ioutil.ReadFile(caKeyPath)
 
 	if opts.Port == 0 {
 		opts.Port = 1080
@@ -55,7 +64,7 @@ func New(ctx context.Context, opts *ProxyOptions) (*Proxy, error) {
 
 	popts := httransform.ServerOpts{
 		TLSCertCA:     caCert,
-		TLSPrivateKey: caPrivateKey,
+		TLSPrivateKey: caKey,
 		Layers:        opts.Layers,
 	}
 
