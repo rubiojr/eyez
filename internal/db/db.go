@@ -1,6 +1,10 @@
 package db
 
-import "database/sql"
+import (
+	"database/sql"
+
+	_ "modernc.org/sqlite"
+)
 
 const (
 	DefaultCaptureCollection = `requests`
@@ -25,7 +29,7 @@ const collectionCreateSQL = `CREATE TABLE IF NOT EXISTS "` + DefaultCaptureColle
 
 func InitDB() error {
 	var err error
-	db, err = sql.Open("sqlite3", DefaultDatabase)
+	db, err = sql.Open("sqlite", DefaultDatabase)
 	if err != nil {
 		return err
 	}

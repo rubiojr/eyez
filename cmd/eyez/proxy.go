@@ -8,7 +8,6 @@ import (
 	"os/signal"
 	"syscall"
 
-	_ "github.com/mattn/go-sqlite3"
 	"github.com/rubiojr/eyez"
 )
 
