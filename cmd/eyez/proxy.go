@@ -15,6 +15,7 @@ func main() {
 	crt := flag.String("cacert", "", "CA Certificate")
 	key := flag.String("cakey", "", "CA Key")
 	port := flag.Int("port", 1080, "Proxy listening port")
+	dbPath := flag.String("db", "records.db", "Database file path")
 	flag.Parse()
 
 	ctx, cancel := context.WithCancel(context.Background())
@@ -30,7 +31,7 @@ func main() {
 		}
 	}()
 
-	proxy, err := eyez.New(ctx, &eyez.ProxyOptions{Port: *port, CACert: *crt, CAKey: *key})
+	proxy, err := eyez.New(ctx, &eyez.ProxyOptions{Port: *port, CACert: *crt, CAKey: *key, DBPath: *dbPath})
 	if err != nil {
 		fmt.Fprintf(os.Stderr, "error creating proxy: %s", err)
 		os.Exit(1)

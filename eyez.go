@@ -11,6 +11,7 @@ import (
 
 	"github.com/9seconds/httransform/v2"
 	"github.com/9seconds/httransform/v2/layers"
+	"github.com/rubiojr/eyez/internal/db"
 	l "github.com/rubiojr/eyez/internal/layers"
 )
 
@@ -31,6 +32,7 @@ type ProxyOptions struct {
 	Layers []layers.Layer
 	CACert string
 	CAKey  string
+	DBPath string
 }
 
 func New(ctx context.Context, opts *ProxyOptions) (*Proxy, error) {
@@ -56,8 +58,12 @@ func New(ctx context.Context, opts *ProxyOptions) (*Proxy, error) {
 		opts.Port = 1080
 	}
 
+	if opts.DBPath == "" {
+		opts.DBPath = db.DefaultDatabase
+	}
+
 	if opts.Layers == nil {
-		if opts.Layers, err = DefaultLayers(); err != nil {
+		if opts.Layers, err = DefaultLayers(opts); err != nil {
 			return nil, err
 		}
 	}
@@ -74,8 +80,8 @@ func New(ctx context.Context, opts *ProxyOptions) (*Proxy, error) {
 	return &proxy, err
 }
 
-func DefaultLayers() ([]layers.Layer, error) {
-	persistance, err := l.NewPersist()
+func DefaultLayers(opts *ProxyOptions) ([]layers.Layer, error) {
+	persistance, err := l.NewPersist(opts.DBPath)
 	if err != nil {
 		return nil, err
 	}

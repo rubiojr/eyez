@@ -1,6 +1,7 @@
 package main
 
 import (
+	"flag"
 	"fmt"
 	"math/rand"
 	"os"
@@ -12,9 +13,12 @@ import (
 )
 
 func main() {
+	dbPath := flag.String("db", "records.db", "Database file path")
+	flag.Parse()
+
 	rand.Seed(time.Now().UTC().UnixNano())
 
-	db.InitRODB()
+	db.InitRODB(*dbPath)
 	m := tui.NewModel()
 	if err := tea.NewProgram(m).Start(); err != nil {
 		fmt.Println("Error running program:", err)

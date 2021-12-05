@@ -12,8 +12,8 @@ import (
 
 type Persist struct{}
 
-func NewPersist() (layers.Layer, error) {
-	err := db.InitDB()
+func NewPersist(path string) (layers.Layer, error) {
+	err := db.InitDB(path)
 	if err != nil {
 		return nil, err
 	}

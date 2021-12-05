@@ -43,9 +43,9 @@ const collectionCreateSQL = `CREATE TABLE IF NOT EXISTS "` + DefaultCaptureColle
 	"time_taken" INTEGER
 )`
 
-func InitDB() error {
+func InitDB(path string) error {
 	var err error
-	db, err = sql.Open("sqlite3", DefaultDatabase)
+	db, err = sql.Open("sqlite3", path)
 	if err != nil {
 		return err
 	}
@@ -54,9 +54,9 @@ func InitDB() error {
 	return err
 }
 
-func InitRODB() error {
+func InitRODB(path string) error {
 	var err error
-	db, err = sql.Open("sqlite3", "file:"+DefaultDatabase+"?mode=ro")
+	db, err = sql.Open("sqlite3", "file:"+path+"?mode=ro")
 	return err
 }
 
