@@ -21,16 +21,27 @@ type ProxyOptions struct {
 	Port   int
 	BindIP string
 	Layers []layers.Layer
+	CACert string
+	CAKey  string
 }
 
 func New(ctx context.Context, opts *ProxyOptions) (*Proxy, error) {
 	var err error
 
-	caCert, err := ioutil.ReadFile("certs/rootCA.crt")
+	caCertPath := opts.CACert
+	if caCertPath == "" {
+		caCertPath = "certs/rootCA.crt"
+	}
+	caCert, err := ioutil.ReadFile(caCertPath)
 	if err != nil {
 		panic(err)
 	}
-	caPrivateKey, _ := ioutil.ReadFile("certs/rootCA.key")
+
+	caKeyPath := opts.CAKey
+	if caKeyPath == "" {
+		caKeyPath = "certs/rootCA.key"
+	}
+	caPrivateKey, _ := ioutil.ReadFile(caKeyPath)
 
 	if opts.Port == 0 {
 		opts.Port = 1080
