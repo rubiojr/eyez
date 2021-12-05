@@ -7,8 +7,6 @@ import (
 	"github.com/charmbracelet/bubbles/key"
 	"github.com/charmbracelet/bubbles/list"
 	tea "github.com/charmbracelet/bubbletea"
-	"github.com/charmbracelet/lipgloss"
-	_ "github.com/mattn/go-sqlite3"
 	"github.com/rjeczalik/notify"
 	"github.com/rubiojr/eyez/internal/db"
 )
@@ -16,20 +14,8 @@ import (
 const MAX_RECORDS = "50"
 
 var (
-	appStyle = lipgloss.NewStyle().Padding(1, 2)
-
-	titleStyle = lipgloss.NewStyle().
-			Foreground(lipgloss.Color("#FFFDF5")).
-			Background(lipgloss.Color("#25A065")).
-			Padding(0, 1)
-
-	statusMessageStyle = lipgloss.NewStyle().
-				Foreground(lipgloss.AdaptiveColor{Light: "#04B575", Dark: "#04B575"}).
-				Render
 	stack = NewRStack()
 )
-
-var m model
 
 type Record struct {
 	db.Record
@@ -108,7 +94,6 @@ func monitorDatabase() error {
 		// Block until an event is received.
 		switch ei := <-c; ei.Event() {
 		case notify.InModify:
-			fmt.Println("Database changed")
 			fetchItems()
 		}
 	}
@@ -144,6 +129,9 @@ func NewModel() model {
 
 	// Setup list
 	delegate := newItemDelegate(delegateKeys)
+	delegate.Styles.NormalTitle = itemTitleStyle
+	delegate.Styles.SelectedTitle = selectedItemTitleStyle
+	delegate.Styles.SelectedDesc = selectedItemDesc
 	records = list.NewModel(fetchItems(), delegate, 0, 0)
 	records.Title = "Outboud Connections"
 	records.Styles.Title = titleStyle

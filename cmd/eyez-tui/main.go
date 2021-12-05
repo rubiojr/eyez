@@ -14,7 +14,7 @@ import (
 func main() {
 	rand.Seed(time.Now().UTC().UnixNano())
 
-	db.InitDB()
+	db.InitRODB()
 	m := tui.NewModel()
 	if err := tea.NewProgram(m).Start(); err != nil {
 		fmt.Println("Error running program:", err)
