@@ -1,6 +1,6 @@
 # eyeZ
 
-HTTP proxy experiment powered by [bubbletea](https://github.com/charmbracelet) and (httransform)[github.com/9seconds/httransform]
+HTTP proxy experiment powered by [bubbletea](https://github.com/charmbracelet) and [httransform](github.com/9seconds/httransform)
 
 ## Features
 
