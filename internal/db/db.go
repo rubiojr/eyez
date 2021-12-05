@@ -1,13 +1,13 @@
-package main
+package db
 
 import "database/sql"
 
 const (
-	defaultCaptureCollection = `requests`
-	defaultDatabase          = `records.db`
+	DefaultCaptureCollection = `requests`
+	DefaultDatabase          = `records.db`
 )
 
-const collectionCreateSQL = `CREATE TABLE IF NOT EXISTS "` + defaultCaptureCollection + `" (
+const collectionCreateSQL = `CREATE TABLE IF NOT EXISTS "` + DefaultCaptureCollection + `" (
 	"id" INTEGER PRIMARY KEY,
 	"uuid" VARCHAR(36) NOT NULL,
 	"method" VARCHAR(10),
@@ -21,8 +21,8 @@ const collectionCreateSQL = `CREATE TABLE IF NOT EXISTS "` + defaultCaptureColle
 	"time_taken" INTEGER
 )`
 
-func initDB() (*sql.DB, error) {
-	db, err := sql.Open("sqlite3", defaultDatabase)
+func InitDB() (*sql.DB, error) {
+	db, err := sql.Open("sqlite3", DefaultDatabase)
 	if err != nil {
 		return db, err
 	}

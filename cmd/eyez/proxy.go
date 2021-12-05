@@ -16,25 +16,24 @@ import (
 	"github.com/9seconds/httransform/v2/layers"
 	"github.com/google/uuid"
 	_ "github.com/mattn/go-sqlite3"
+	"github.com/rubiojr/eyez/internal/db"
 )
 
-var db *sql.DB
+var database *sql.DB
 
 type StdoutLayer struct{}
 
 func main() {
 	var err error
-	db, err = initDB()
+	database, err = db.InitDB()
 	if err != nil {
 		panic(err)
 	}
-	defer db.Close()
+	defer database.Close()
 
 	ctx, cancel := context.WithCancel(context.Background())
 	defer cancel()
 
-	// For demo purpose we are going to close by SIGINT and SIGTERM
-	// signals.
 	signals := make(chan os.Signal, 1)
 
 	signal.Notify(signals, syscall.SIGINT, syscall.SIGTERM)
@@ -109,7 +108,7 @@ func (StdoutLayer) OnRequest(ctx *layers.Context) error {
 	}
 	fmt.Printf(tagStyle.Render("connect") + " " + tagStyle.Render("core"))
 	fmt.Println()
-	_, err := db.Exec("INSERT INTO "+defaultCaptureCollection+" (uuid, url, body, path, headers, date_end, status, method) VALUES (?,?,?,?,?,?,?,?)",
+	_, err := database.Exec("INSERT INTO "+db.DefaultCaptureCollection+" (uuid, url, body, path, headers, date_end, status, method) VALUES (?,?,?,?,?,?,?,?)",
 		uuid.New().String(),
 		req.URI().String(),
 		body,
