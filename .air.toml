@@ -4,7 +4,7 @@ tmp_dir = "tmp"
 
 [build]
   bin = "/usr/bin/true"
-  cmd = "make; .private/syncrepo"
+  cmd = "make all; .private/syncrepo"
   delay = 1000
   exclude_dir = ["assets", "tmp", "vendor", "testdata"]
   exclude_unchanged = false
