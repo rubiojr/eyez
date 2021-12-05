@@ -4,7 +4,8 @@ import (
 	"database/sql"
 	"time"
 
-	_ "modernc.org/sqlite"
+	//_ "modernc.org/sqlite"
+	_ "github.com/mattn/go-sqlite3"
 )
 
 const (
@@ -44,12 +45,18 @@ const collectionCreateSQL = `CREATE TABLE IF NOT EXISTS "` + DefaultCaptureColle
 
 func InitDB() error {
 	var err error
-	db, err = sql.Open("sqlite", DefaultDatabase)
+	db, err = sql.Open("sqlite3", DefaultDatabase)
 	if err != nil {
 		return err
 	}
 
 	_, err = db.Exec(collectionCreateSQL)
+	return err
+}
+
+func InitRODB() error {
+	var err error
+	db, err = sql.Open("sqlite3", "file:"+DefaultDatabase+"?mode=ro")
 	return err
 }
 
