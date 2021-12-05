@@ -2,22 +2,16 @@ package main
 
 import (
 	"context"
-	"io/ioutil"
-	"net"
+	"fmt"
 	"os"
 	"os/signal"
 	"syscall"
-	"time"
 
-	"github.com/9seconds/httransform/v2"
-	"github.com/9seconds/httransform/v2/layers"
 	_ "github.com/mattn/go-sqlite3"
-	l "github.com/rubiojr/eyez/internal/layers"
+	"github.com/rubiojr/eyez"
 )
 
 func main() {
-	var err error
-
 	ctx, cancel := context.WithCancel(context.Background())
 	defer cancel()
 
@@ -31,40 +25,15 @@ func main() {
 		}
 	}()
 
-	caCert, err := ioutil.ReadFile("certs/rootCA.crt")
+	proxy, err := eyez.New(ctx, &eyez.ProxyOptions{Port: 1080})
 	if err != nil {
-		panic(err)
+		fmt.Fprintf(os.Stderr, "error creating proxy: %s", err)
+		os.Exit(1)
 	}
-	caPrivateKey, _ := ioutil.ReadFile("certs/rootCA.key")
 
-	persistance, err := l.NewPersist()
+	err = proxy.Serve()
 	if err != nil {
-		panic(err)
-	}
-
-	opts := httransform.ServerOpts{
-		TLSCertCA:     caCert,
-		TLSPrivateKey: caPrivateKey,
-		Layers: []layers.Layer{
-			persistance,
-			l.Stdout{},
-			layers.TimeoutLayer{
-				Timeout: 3 * time.Minute,
-			},
-		},
-	}
-
-	proxy, err := httransform.NewServer(ctx, opts)
-	if err != nil {
-		panic(err)
-	}
-
-	listener, err := net.Listen("tcp", ":1080")
-	if err != nil {
-		panic(err)
-	}
-
-	if err := proxy.Serve(listener); err != nil {
-		panic(err)
+		fmt.Fprintf(os.Stderr, "error serving proxy: %s", err)
+		os.Exit(1)
 	}
 }
