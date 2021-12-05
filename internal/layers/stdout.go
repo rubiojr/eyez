@@ -25,7 +25,7 @@ func (Stdout) OnRequest(ctx *layers.Context) error {
 			continue
 		}
 		if strings.HasPrefix(line, "Authorization:") {
-			fmt.Println(styles.Header.Render("Autorization: *****"))
+			fmt.Println(styles.Header.Render("Autorization: [REDACTED]"))
 		} else {
 			fmt.Println(styles.Header.Render(line))
 		}

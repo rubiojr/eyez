@@ -2,6 +2,7 @@ package layers
 
 import (
 	"fmt"
+	"strings"
 	"time"
 
 	"github.com/9seconds/httransform/v2/layers"
@@ -22,13 +23,21 @@ func NewPersist() (layers.Layer, error) {
 
 func (Persist) OnRequest(ctx *layers.Context) error {
 	req := ctx.Request()
+	var sb strings.Builder
+	req.Header.VisitAll(func(key, value []byte) {
+		if string(key) == "Authorization" {
+			sb.WriteString("Authorization: [REDACTED]\n")
+			return
+		}
+		sb.WriteString(fmt.Sprintf("%s: %s\n", key, value))
+	})
 	body := req.Body()
 	_, err := db.Exec("INSERT INTO "+db.DefaultCaptureCollection+" (uuid, url, body, path, headers, date_end, status, method) VALUES (?,?,?,?,?,?,?,?)",
 		uuid.New().String(),
 		req.URI().String(),
 		body,
 		req.URI().Path(),
-		req.Header.RawHeaders(),
+		sb.String(),
 		time.Now(),
 		ctx.Response().StatusCode(),
 		req.Header.Method(),
