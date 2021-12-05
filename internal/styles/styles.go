@@ -1,19 +1,19 @@
-package main
+package styles
 
 import "github.com/charmbracelet/lipgloss"
 
-var urlStyle = lipgloss.NewStyle().
+var Url = lipgloss.NewStyle().
 	Bold(true).
 	Foreground(lipgloss.Color("#6c44b3"))
 
-var keyStyle = lipgloss.NewStyle().
+var Key = lipgloss.NewStyle().
 	Bold(true).
 	Foreground(lipgloss.Color("#4078c0"))
 
-var headersStyle = lipgloss.NewStyle().
+var Header = lipgloss.NewStyle().
 	PaddingLeft(2)
 
-var tagStyle = lipgloss.NewStyle().
+var Tag = lipgloss.NewStyle().
 	Background(lipgloss.Color("#42474f")).
 	Foreground(lipgloss.Color("#fff")).
 	PaddingLeft(1).

@@ -7,6 +7,8 @@ const (
 	DefaultDatabase          = `records.db`
 )
 
+var db *sql.DB
+
 const collectionCreateSQL = `CREATE TABLE IF NOT EXISTS "` + DefaultCaptureCollection + `" (
 	"id" INTEGER PRIMARY KEY,
 	"uuid" VARCHAR(36) NOT NULL,
@@ -21,12 +23,17 @@ const collectionCreateSQL = `CREATE TABLE IF NOT EXISTS "` + DefaultCaptureColle
 	"time_taken" INTEGER
 )`
 
-func InitDB() (*sql.DB, error) {
-	db, err := sql.Open("sqlite3", DefaultDatabase)
+func InitDB() error {
+	var err error
+	db, err = sql.Open("sqlite3", DefaultDatabase)
 	if err != nil {
-		return db, err
+		return err
 	}
 
 	_, err = db.Exec(collectionCreateSQL)
-	return db, err
+	return err
+}
+
+func Exec(query string, args ...interface{}) (sql.Result, error) {
+	return db.Exec(query, args...)
 }
