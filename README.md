@@ -9,11 +9,13 @@ HTTP proxy experiment powered by [bubbletea](https://github.com/charmbracelet) a
 
 ## Installation
 
+TUI and proxy/recorder are different binaries. `eyez` is the proxy and `eyez-tui` is where the terminal viewer lives.
+
 ```
-# Proxy/Recorder
+# Proxy/Recorder binary
 go install github.com/rubiojr/eyez/cmd/eyez@latest
 
-# optional TUI Viewer
+# optional TUI Viewer binary
 go install github.com/rubiojr/eyez/cmd/eyez-tui@latest
 ```
 
@@ -37,6 +39,6 @@ TUI Viewer
 
 ![](docs/tui.png)
 
-Record Screen
+Proxy Screen
 
 ![](docs/eyez.png)
