@@ -2,7 +2,6 @@ package layers
 
 import (
 	"fmt"
-	"strings"
 	"time"
 
 	"github.com/9seconds/httransform/v2/layers"
@@ -20,16 +19,13 @@ func (Stdout) OnRequest(ctx *layers.Context) error {
 	fmt.Printf("%s: %s\n", styles.Key.Render("Method"), string(req.Header.Method()))
 	fmt.Printf("%s: %s\n", styles.Key.Render("Path"), string(req.URI().Path()))
 	fmt.Println(styles.Key.Render("Headers:"))
-	for _, line := range strings.Split(strings.TrimSuffix(string(req.Header.RawHeaders()), "\n"), "\n") {
-		if strings.TrimSpace(line) == "" {
-			continue
+	req.Header.VisitAll(func(key, value []byte) {
+		h := fmt.Sprintf("%s: %s", key, value)
+		if string(key) == "Authorization" {
+			h = fmt.Sprintf("%s: %s", key, "[REDACTED]")
 		}
-		if strings.HasPrefix(line, "Authorization:") {
-			fmt.Println(styles.Header.Render("Autorization: [REDACTED]"))
-		} else {
-			fmt.Println(styles.Header.Render(line))
-		}
-	}
+		fmt.Println(styles.Header.Render(h))
+	})
 	body := req.Body()
 	if len(body) > 0 {
 		fmt.Printf("%s: %d bytes\n", styles.Key.Render("Body Size"), len(body))

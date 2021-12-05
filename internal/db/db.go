@@ -2,6 +2,7 @@ package db
 
 import (
 	"database/sql"
+	"time"
 
 	_ "modernc.org/sqlite"
 )
@@ -12,6 +13,20 @@ const (
 )
 
 var db *sql.DB
+
+type Record struct {
+	ID        int
+	UUID      string
+	Method    string
+	Status    int
+	URL       string
+	Path      string
+	Headers   string
+	Body      []byte
+	DateStart *time.Time
+	DateEnd   *time.Time
+	TimeTaken int
+}
 
 const collectionCreateSQL = `CREATE TABLE IF NOT EXISTS "` + DefaultCaptureCollection + `" (
 	"id" INTEGER PRIMARY KEY,
@@ -40,4 +55,24 @@ func InitDB() error {
 
 func Exec(query string, args ...interface{}) (sql.Result, error) {
 	return db.Exec(query, args...)
+}
+
+func Each(visitor func(rec *Record) error) error {
+	rows, err := db.Query("SELECT id, uuid, method, status, url, path, headers, body, date_start, date_end FROM " + DefaultCaptureCollection + " ORDER BY date_end DESC")
+	if err != nil {
+		return err
+	}
+
+	for rows.Next() {
+		rec := Record{}
+		err := rows.Scan(&rec.ID, &rec.UUID, &rec.Method, &rec.Status, &rec.URL, &rec.Path, &rec.Headers, &rec.Body, &rec.DateStart, &rec.DateEnd)
+		if err != nil {
+			return err
+		}
+		if err := visitor(&rec); err != nil {
+			return err
+		}
+	}
+
+	return nil
 }
